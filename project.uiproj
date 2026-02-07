@@ -1,0 +1,6 @@
+{
+  "Name": "Bank vs Payment Gateway Daily Settlement Reconciliation",
+  "ProjectType": "Process",
+  "Description": "Automated the daily financial reconciliation between bank transactions stored in SQL Server and payment gateway records from CSV files using UiPath REFramework. The solution compares transactions by ID, amount, and date, identifies matched, mismatched, and missing records, processes them through Orchestrator Queues, and generates audit-ready reconciliation reports with full logging and exception handling.",
+  "MainFile": "Main.xaml"
+}
