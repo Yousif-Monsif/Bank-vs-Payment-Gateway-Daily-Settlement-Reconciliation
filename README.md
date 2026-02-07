@@ -1,39 +1,129 @@
-### Documentation is included in the Documentation folder ###
+Got it 👍 — you want **the same structure, tone, and simplicity**, just adapted to **Bank vs Payment Gateway Reconciliation**.
+Here is a **clean, professional README** in **exactly that style**.
 
+You can paste this directly into GitHub.
 
-### REFrameWork Template ###
-**Robotic Enterprise Framework**
+---
 
-* Built on top of *Transactional Business Process* template
-* Uses *State Machine* layout for the phases of automation project
-* Offers high level logging, exception handling and recovery
-* Keeps external settings in *Config.xlsx* file and Orchestrator assets
-* Pulls credentials from Orchestrator assets and *Windows Credential Manager*
-* Gets transaction data from Orchestrator queue and updates back status
-* Takes screenshots in case of system exceptions
+# RPA-Bank-vs-Payment-Gateway-Reconciliation
 
+An end-to-end UiPath REFramework automation that performs daily financial reconciliation between a Bank system (SQL Server) and a Payment Gateway (CSV files), identifying matched, mismatched, missing, and invalid transactions with full exception handling.
 
-### How It Works ###
+## Business Scenario
 
-1. **INITIALIZE PROCESS**
- + ./Framework/*InitiAllSettings* - Load configuration data from Config.xlsx file and from assets
- + ./Framework/*GetAppCredential* - Retrieve credentials from Orchestrator assets or local Windows Credential Manager
- + ./Framework/*InitiAllApplications* - Open and login to applications used throughout the process
+Many banks and fintech companies still perform daily settlement reconciliation manually using Excel sheets.
+This automation simulates a real enterprise reconciliation process by:
 
-2. **GET TRANSACTION DATA**
- + ./Framework/*GetTransactionData* - Fetches transactions from an Orchestrator queue defined by Config("OrchestratorQueueName") or any other configured data source
+1. Reading daily bank transactions from a SQL Server database
+2. Reading payment gateway transactions from CSV files
+3. Validating mandatory fields and data integrity
+4. Reconciling transactions using TransactionID as a unique key
+5. Generating a reconciliation report with detailed statuses
+6. Handling business and system exceptions using REFramework
 
-3. **PROCESS TRANSACTION**
- + *Process* - Process trasaction and invoke other workflows related to the process being automated 
- + ./Framework/*SetTransactionStatus* - Updates the status of the processed transaction (Orchestrator transactions by default): Success, Business Rule Exception or System Exception
+## Architecture
 
-4. **END PROCESS**
- + ./Framework/*CloseAllApplications* - Logs out and closes applications used throughout the process
+* **Framework:** UiPath REFramework (Transactional Process)
+* **Transaction Source:** SQL Server (BankTransactions table)
+* **Transaction Item:** TransactionID (String)
+* **Secondary Source:** Payment Gateway CSV file
+* **Processing Pattern:** Queue-based reconciliation
+* **Logging & Retry:** Built-in REFramework mechanisms
 
+## Process Flow
 
-### For New Project ###
+1. **Init State**
 
-1. Check the Config.xlsx file and add/customize any required fields and values
-2. Implement InitiAllApplications.xaml and CloseAllApplicatoins.xaml workflows, linking them in the Config.xlsx fields
-3. Implement GetTransactionData.xaml and SetTransactionStatus.xaml according to the transaction type being used (Orchestrator queues by default)
-4. Implement Process.xaml workflow and invoke other workflows related to the process being automated
+   * Open SQL Server connection
+   * Load configuration values
+   * Read payment gateway CSV file
+   * Validate and clean input data
+   * Initialize reconciliation result DataTable
+
+2. **Get Transaction Data**
+
+   * Fetch next bank transaction from SQL
+   * Extract TransactionID
+   * Add TransactionID to Orchestrator Queue
+
+3. **Process Transaction**
+
+   * Retrieve corresponding gateway transaction
+   * Compare amount, currency, and transaction date
+   * Assign reconciliation status:
+
+     * `Matched`
+     * `Mismatch`
+     * `Missing in Gateway`
+     * `Invalid Data`
+   * Append result to reconciliation output
+
+4. **Exception Handling**
+
+   * Business Exception → Missing fields, invalid amounts or dates
+   * System Exception → SQL connection failure, file read errors
+   * Failed transactions are logged with detailed reasons
+
+5. **End Process**
+
+   * Write reconciliation results to Excel / CSV
+   * Close database connection
+   * Final logging
+
+## Database Schema
+
+Table: `BankTransactions`
+
+| Column          | Description        |
+| --------------- | ------------------ |
+| TransactionID   | Primary Key        |
+| Amount          | Transaction amount |
+| Currency        | Currency code      |
+| TransactionDate | Transaction date   |
+
+## Reconciliation Output
+
+| Column        | Description                            |
+| ------------- | -------------------------------------- |
+| TransactionID | Unique transaction identifier          |
+| Status        | Matched / Mismatch / Missing / Invalid |
+| Reason        | Explanation of reconciliation result   |
+| Source        | Bank / Gateway                         |
+
+## Technologies Used
+
+* UiPath Studio
+* UiPath REFramework
+* UiPath Orchestrator Queues
+* SQL Server
+* CSV File Processing
+* Excel / CSV Reporting
+* LINQ for data validation and comparison
+
+## Key RPA Concepts Demonstrated
+
+* Queue-based transaction processing
+* Financial reconciliation automation
+* SQL and file system integration
+* Data validation and cleansing
+* Dictionary-based fast lookups
+* Exception classification (Business vs System)
+* Retry logic using REFramework
+
+## Project Value
+
+This project simulates a real-world financial reconciliation use case commonly found in:
+
+* Banks
+* Fintech companies
+* Payment service providers
+* Shared Service Centers
+* RPA Centers of Excellence
+
+It demonstrates the ability to design scalable, maintainable, and enterprise-grade reconciliation automations using UiPath best practices.
+
+## Author
+
+**Yousif Monsif**
+Junior RPA Developer | Mechatronics Engineer
+Specialized in UiPath, SQL Automation.
