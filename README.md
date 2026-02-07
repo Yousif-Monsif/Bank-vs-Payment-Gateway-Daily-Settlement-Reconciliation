@@ -1,10 +1,3 @@
-Got it 👍 — you want **the same structure, tone, and simplicity**, just adapted to **Bank vs Payment Gateway Reconciliation**.
-Here is a **clean, professional README** in **exactly that style**.
-
-You can paste this directly into GitHub.
-
----
-
 # RPA-Bank-vs-Payment-Gateway-Reconciliation
 
 An end-to-end UiPath REFramework automation that performs daily financial reconciliation between a Bank system (SQL Server) and a Payment Gateway (CSV files), identifying matched, mismatched, missing, and invalid transactions with full exception handling.
